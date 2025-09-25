@@ -69,4 +69,22 @@ public class BeerServiceImpl implements BeerService {
         log.debug("Get Beer by Id - in service. Id: " + id.toString());
         return beerMap.get(id);
     }
+
+    @Override
+    public Beer saveNewBeer(Beer beer) {
+        Beer savedBeer = Beer.builder()
+                .id(UUID.randomUUID())
+                .version(1)
+                .createdDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
+                .beerName(beer.getBeerName())
+                .beerStyle(beer.getBeerStyle())
+                .upc(beer.getUpc())
+                .price(beer.getPrice())
+                .quantityOnHand(beer.getQuantityOnHand())
+                .build();
+
+        beerMap.put(savedBeer.getId(), savedBeer);
+        return savedBeer;
+    }
 }

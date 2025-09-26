@@ -17,14 +17,20 @@ import java.util.UUID;
 public class CustomerController {
     private final CustomerService customerService;
 
+    @PatchMapping("{customerId}")
+    public ResponseEntity updateCustomerPatchById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+        customerService.patchCustomerById(customerId, customer);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @DeleteMapping("{customerId}")
-    public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId){
+    public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
         customerService.deleteById(customerId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("{customerId}")
-    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer){
+    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         customerService.updateById(customerId, customer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -42,6 +48,7 @@ public class CustomerController {
     public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
     }
+
     @RequestMapping(value = "{customerId}", method = RequestMethod.GET)
     public Customer getCustomerById(@PathVariable("customerId") UUID id) {
         return customerService.getCustomerById(id);

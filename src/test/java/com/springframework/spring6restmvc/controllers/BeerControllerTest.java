@@ -8,12 +8,15 @@ import com.springframework.spring6restmvc.services.BeerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,11 +39,37 @@ class BeerControllerTest {
     @MockitoBean
     BeerService beerService;
 
-    BeerServiceImpl beerServiceImpl = new BeerServiceImpl();
+    BeerServiceImpl beerServiceImpl;
+
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Beer> beerArgumentCaptor;
 
     @BeforeEach
     void setUp() {
         beerServiceImpl = new BeerServiceImpl();
+    }
+
+    @Test
+    void testPatchBeer() throws Exception {
+        Beer beer = beerServiceImpl.listBeers().get(0);
+
+        // create a map with the fields to be updated
+        Map<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "New Beer Name");
+
+        mockMvc.perform(patch("/api/v1/beer/" + beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beerMap)))
+                .andExpect(status().isNoContent());
+
+        verify(beerService).patchBeerById(uuidArgumentCaptor.capture(), beerArgumentCaptor.capture());
+
+        assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+        assertThat(beerMap.get("beerName")).isEqualTo(beerArgumentCaptor.getValue().getBeerName());
     }
 
     @Test
@@ -52,7 +81,6 @@ class BeerControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
         // capture the argument passed to the deleteById method
         verify(beerService).deleteById(uuidArgumentCaptor.capture());
 
@@ -66,8 +94,8 @@ class BeerControllerTest {
 
         mockMvc.perform(put("/api/v1/beer/" + beer.getId())
                         .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(beer)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
                 .andExpect(status().isNoContent());
 
         verify(beerService).updateBeerById(any(UUID.class), any(Beer.class));
@@ -88,10 +116,10 @@ class BeerControllerTest {
 
         mockMvc.perform(post("/api/v1/beer")
                         .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(beer)))
-                        .andExpect(status().isCreated())
-                        .andExpect(header().exists("Location"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"));
 
     }
 

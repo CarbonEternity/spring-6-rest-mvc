@@ -8,12 +8,15 @@ import com.springframework.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,11 +39,36 @@ class CustomerControllerTest {
     @MockitoBean
     CustomerService customerService;
 
-    CustomerServiceImpl customerServiceImpl = new CustomerServiceImpl();
+    CustomerServiceImpl customerServiceImpl;
+
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Customer> customerArgumentCaptor;
 
     @BeforeEach
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void testPatchCustomer() throws Exception {
+        Customer customer = customerServiceImpl.getAllCustomers().get(0);
+
+        Map<String, Object> customerMap = new HashMap<>();
+        customerMap.put("name", "Updated Name");
+
+        mockMvc.perform(patch("/api/v1/customer/" + customer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerMap)))
+                .andExpect(status().isNoContent());
+
+        verify(customerService).patchCustomerById(uuidArgumentCaptor.capture(), customerArgumentCaptor.capture());
+
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(customer.getId());
+        assertThat(customerMap.get("name")).isEqualTo(customerArgumentCaptor.getValue().getName());
     }
 
     @Test
@@ -51,10 +79,9 @@ class CustomerControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isNoContent());
 
-        ArgumentCaptor<UUID> argumentCaptor = ArgumentCaptor.forClass(UUID.class);
-        verify(customerService).deleteById(argumentCaptor.capture());
+        verify(customerService).deleteById(uuidArgumentCaptor.capture());
 
-        assertThat(customer.getId()).isEqualTo(argumentCaptor.getValue());
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test

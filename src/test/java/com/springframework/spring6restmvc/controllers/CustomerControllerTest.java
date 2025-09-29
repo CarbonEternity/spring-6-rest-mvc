@@ -54,7 +54,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void testPatchCustomer() throws Exception {
+    void patchCustomer() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
 
         Map<String, Object> customerMap = new HashMap<>();
@@ -73,7 +73,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void testDeleteCustomer() throws Exception {
+    void deleteCustomer() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
 
         mockMvc.perform(delete(CUSTOMER_PATH_ID, customer.getId())
@@ -86,7 +86,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void testUpdateCustomerById() throws Exception {
+    void updateCustomerById() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
 
         mockMvc.perform(put(CUSTOMER_PATH_ID, customer.getId())
@@ -99,7 +99,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void testCreateCustomer() throws Exception {
+    void createCustomer() throws Exception {
         Customer customer = customerServiceImpl.getAllCustomers().get(0);
         customer.setId(null);
         customer.setVersion(null);
@@ -116,7 +116,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void testGetAllCustomers() throws Exception {
+    void getAllCustomers() throws Exception {
         given(customerService.getAllCustomers()).willReturn(customerServiceImpl.getAllCustomers());
 
         mockMvc.perform(get(CUSTOMER_PATH)
@@ -127,7 +127,15 @@ class CustomerControllerTest {
     }
 
     @Test
-    void testGetCustomerById() throws Exception {
+    void getCustomerByIdNotFound() throws Exception {
+        given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getCustomerById() throws Exception {
         Customer testCustomer = customerServiceImpl.getAllCustomers().get(0);
 
         given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);

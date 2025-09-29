@@ -54,7 +54,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void testPatchBeer() throws Exception {
+    void patchBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
         // create a map with the fields to be updated
@@ -74,7 +74,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void testDeleteBeer() throws Exception {
+    void deleteBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
         // send the delete request with beer
@@ -90,7 +90,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void testUpdateBeerById() throws Exception {
+    void updateBeerById() throws Exception {
         Beer beer = beerServiceImpl.listBeers().get(0);
 
         mockMvc.perform(put(BEER_PATH_ID, beer.getId())
@@ -103,7 +103,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void testCreateNewBear() throws Exception {
+    void createNewBear() throws Exception {
         // to simulate a post, we need to send a beer object without id and version
         // because those are generated when saved
         Beer beer = beerServiceImpl.listBeers().get(0);
@@ -124,7 +124,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void testListBeers() throws Exception {
+    void listBeers() throws Exception {
         given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
 
         mockMvc.perform(get(BEER_PATH)
@@ -135,7 +135,15 @@ class BeerControllerTest {
     }
 
     @Test
-    void testGetBeerById() throws Exception {
+    void getBeerByIdNotFound() throws Exception {
+        given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+        mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getBeerById() throws Exception {
         Beer testBeer = beerServiceImpl.listBeers().get(0);
 
         given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);

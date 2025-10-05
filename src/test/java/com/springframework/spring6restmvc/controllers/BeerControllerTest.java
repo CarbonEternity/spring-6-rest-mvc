@@ -38,6 +38,8 @@ class BeerControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    // A mock is a dummy object that returns null for all methods of the original class.
+    // However, for methods that return Optional, Mockito by default returns Optional.empty() instead of null.
     @MockitoBean
     BeerService beerService;
 
@@ -93,6 +95,14 @@ class BeerControllerTest {
     @Test
     void updateBeerById() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().get(0);
+
+        // Since the controller now throws an exception when the service returns an empty Optional,
+        // we need to define what the mock should return explicitly.
+        //
+        // Without this line, the beerService mock doesn't know what to return,
+        // so by default it returns Optional.empty(), which causes the controller to call isEmpty()
+        // and therefore throw a NotFoundException.
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
 
         mockMvc.perform(put(BEER_PATH_ID, beer.getId())
                         .accept(MediaType.APPLICATION_JSON)

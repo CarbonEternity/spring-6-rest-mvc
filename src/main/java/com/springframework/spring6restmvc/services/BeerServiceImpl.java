@@ -61,7 +61,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> listBeers() {
+    public List<BeerDTO> getAllBears() {
         return new ArrayList<>(beerMap.values());
     }
 
@@ -72,7 +72,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public BeerDTO saveNewBeer(BeerDTO beer) {
+    public BeerDTO saveBeer(BeerDTO beer) {
         BeerDTO savedBeer = BeerDTO.builder()
                 .id(UUID.randomUUID())
                 .version(1)
@@ -102,7 +102,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public Boolean deleteById(UUID beerId) {
+    public Boolean deleteBeerById(UUID beerId) {
         beerMap.remove(beerId);
         return true;
     }

@@ -58,7 +58,7 @@ class BeerControllerTest {
 
     @Test
     void patchBeer() throws Exception {
-        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.getAllBears().get(0);
 
         // create a map with the fields to be updated
         Map<String, Object> beerMap = new HashMap<>();
@@ -78,9 +78,9 @@ class BeerControllerTest {
 
     @Test
     void deleteBeer() throws Exception {
-        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.getAllBears().get(0);
 
-        given(beerService.deleteById(any())).willReturn(true);
+        given(beerService.deleteBeerById(any())).willReturn(true);
 
         // send the delete request with beer
         mockMvc.perform(delete(BEER_PATH_ID, beer.getId())
@@ -88,7 +88,7 @@ class BeerControllerTest {
                 .andExpect(status().isNoContent());
 
         // capture the argument passed to the deleteById method
-        verify(beerService).deleteById(uuidArgumentCaptor.capture());
+        verify(beerService).deleteBeerById(uuidArgumentCaptor.capture());
 
         // assert that the id passed to the deleteById method is the same as the beer id
         assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
@@ -96,7 +96,7 @@ class BeerControllerTest {
 
     @Test
     void updateBeerById() throws Exception {
-        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.getAllBears().get(0);
 
         // Since the controller now throws an exception when the service returns an empty Optional,
         // we need to define what the mock should return explicitly.
@@ -116,17 +116,17 @@ class BeerControllerTest {
     }
 
     @Test
-    void createNewBear() throws Exception {
+    void createBear() throws Exception {
         // to simulate a post, we need to send a beer object without id and version
         // because those are generated when saved
-        BeerDTO beer = beerServiceImpl.listBeers().get(0);
+        BeerDTO beer = beerServiceImpl.getAllBears().get(0);
         beer.setVersion(null);
         beer.setId(null);
 
         // mock the service call
         // return the first beer in the list because we changed the id and version from the 0 object by link
-        given(beerService.saveNewBeer(any(BeerDTO.class)))
-                .willReturn(beerServiceImpl.listBeers().get(1));
+        given(beerService.saveBeer(any(BeerDTO.class)))
+                .willReturn(beerServiceImpl.getAllBears().get(1));
 
         mockMvc.perform(post(BEER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
@@ -137,8 +137,8 @@ class BeerControllerTest {
     }
 
     @Test
-    void listBeers() throws Exception {
-        given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
+    void getAllBears() throws Exception {
+        given(beerService.getAllBears()).willReturn(beerServiceImpl.getAllBears());
 
         mockMvc.perform(get(BEER_PATH)
                         .accept(MediaType.APPLICATION_JSON))
@@ -157,7 +157,7 @@ class BeerControllerTest {
 
     @Test
     void getBeerById() throws Exception {
-        BeerDTO testBeer = beerServiceImpl.listBeers().get(0);
+        BeerDTO testBeer = beerServiceImpl.getAllBears().get(0);
 
         given(beerService.getBeerById(testBeer.getId())).willReturn(Optional.of(testBeer));
 

@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,9 +18,16 @@ public class BeerDTO {
     @NotBlank
     @NotNull
     private String beerName;
+
+    @NotNull
     private BeerStyle beerStyle;
+
+    @NotBlank
+    @NotNull
     private String upc;
     private Integer quantityOnHand;
+
+    @NotNull
     private BigDecimal price;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;

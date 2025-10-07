@@ -119,6 +119,24 @@ class BeerControllerTest {
     }
 
     @Test
+    void updateBeerByIdEmptyBeerName() throws Exception {
+        BeerDTO beer = beerServiceImpl.getAllBears().get(0);
+        beer.setBeerName("");
+
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
+
+        MvcResult mvcResult = mockMvc.perform(put(BEER_PATH_ID, beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.length()", is(1)))
+                .andReturn();
+
+        System.out.println(mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
     void createBear() throws Exception {
         // to simulate a post, we need to send a beer object without id and version
         // because those are generated when saved
@@ -140,7 +158,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void createBeerWithNullBearName() throws Exception {
+    void createBlankBeer() throws Exception {
         BeerDTO beer = BeerDTO.builder().build();
 
         given(beerService.saveBeer(any(BeerDTO.class)))
@@ -151,7 +169,7 @@ class BeerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beer)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$.length()", is(6)))
                 .andReturn();
 
         System.out.println(mvcResult.getResponse().getContentAsString());

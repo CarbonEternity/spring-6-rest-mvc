@@ -40,6 +40,7 @@ public class Beer {
     private String beerName;
 
     @NotNull
+    @JdbcTypeCode(value = SqlTypes.SMALLINT) // TODO
     private BeerStyle beerStyle;
 
     @NotBlank

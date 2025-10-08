@@ -1,16 +1,10 @@
-version: "3.9"
-
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-local
-    restart: always
+  mysql-spring:
+    image: 'mysql:latest'
     environment:
-      MYSQL_ROOT_PASSWORD: admin
+      - 'MYSQL_DATABASE=mydatabase'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=myuser'
     ports:
-      - "3306:3306"                        # проброс порта на localhost
-    volumes:
-      - mysql_data:/var/lib/mysql          # чтобы данные не терялись
-
-volumes:
-  mysql_data:
+      - '3306'

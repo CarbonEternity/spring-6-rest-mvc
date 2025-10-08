@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  mysql-docker:
+    image: mysql:latest
+    container_name: mysql-local
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3306:3306"                        # проброс порта на localhost
+    volumes:
+      - mysql_data:/var/lib/mysql          # чтобы данные не терялись
+
+volumes:
+  mysql_data:

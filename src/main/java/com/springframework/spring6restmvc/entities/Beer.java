@@ -40,7 +40,9 @@ public class Beer {
     private String beerName;
 
     @NotNull
-    @JdbcTypeCode(value = SqlTypes.SMALLINT) // TODO
+    @JdbcTypeCode(value = SqlTypes.SMALLINT)
+    // Store BeerStyle enum as SMALLINT (2 bytes) instead of VARCHAR or INTEGER
+    // to save space and improve DB efficiency (Hibernate 6+ feature)
     private BeerStyle beerStyle;
 
     @NotBlank

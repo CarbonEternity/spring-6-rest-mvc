@@ -41,10 +41,9 @@ class BeerRepositoryTest {
                 .price(new BigDecimal("1.99"))
                 .build());
 
-        beerRepository.flush(); // TODO
+        beerRepository.flush(); // forces Hibernate to execute SQL INSERT now
 
         assertThat(savedBeer).isNotNull();
         assertThat(savedBeer.getId()).isNotNull();
     }
-
 }

@@ -12,10 +12,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@ControllerAdvice // TODO This annotation is used to handle exceptions
+/** Global exception handler for all controllers.
+ * Allows centralizing error handling logic (e.g., validation errors)
+ * and returning consistent HTTP responses instead of duplicating try/catch blocks.
+ */
+@ControllerAdvice
 public class CustomErrorController {
 
-    // TODO
+    /** Handles JPA validation exceptions (@ExceptionHandler)
+     * Catches TransactionSystemException, extracts ConstraintViolationException,
+     * builds a list of validation errors as "field → message" pairs,
+     * and returns HTTP 400 (Bad Request) with the error details in the response body.
+     */
     @ExceptionHandler(TransactionSystemException.class)
     ResponseEntity handleJPAViolations(TransactionSystemException exception) {
         ResponseEntity.BodyBuilder responseEntity = ResponseEntity.badRequest();

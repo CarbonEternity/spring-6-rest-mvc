@@ -54,7 +54,9 @@ class BeerControllerIT {
     MockMvc mockMvc;
 
     @BeforeEach
-    void setUp() { //TODO
+    void setUp() {
+        // Initialize MockMvc using the WebApplicationContext because we want
+        // to test the full stack including filters, controllers, advice, etc.
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 

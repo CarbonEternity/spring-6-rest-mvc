@@ -20,8 +20,8 @@ public class Customer {
     @Id
     @GeneratedValue(generator = "UUID")
     @UuidGenerator
-    @JdbcTypeCode(SqlTypes.CHAR) //TODO: added when switching from h2 to mysql
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false) //TODO: varchar(36) added when switching from h2 to mysql
+    @JdbcTypeCode(SqlTypes.CHAR) // added when switching from h2 to mysql
+    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false) // varchar(36) added when switching from h2 to mysql
     private UUID id;
     private String name;
 

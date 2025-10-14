@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO
 @Testcontainers
 @SpringBootTest
 @ActiveProfiles("localmysql")
@@ -26,6 +25,7 @@ public class MySqlIT {
     static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0");
 
     // for not to use the values from localmysql profile properties file
+    // without @ServiceConnection annotation we need this method to set the datasource properties
 //    @DynamicPropertySource
 //    static void setDatasourceProperties(DynamicPropertyRegistry registry) {
 //        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);

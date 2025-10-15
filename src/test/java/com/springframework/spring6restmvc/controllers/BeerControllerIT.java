@@ -158,7 +158,7 @@ class BeerControllerIT {
     @Test
     void listBeers() {
         List<BeerDTO> dtos = beerController.listBeers();
-        assertThat(dtos.size()).isEqualTo(3);
+        assertThat(dtos.size()).isEqualTo(2413);
     }
 
     // we use rollback because we don’t want changes (like deleteAll)

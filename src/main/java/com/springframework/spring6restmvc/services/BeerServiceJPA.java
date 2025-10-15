@@ -3,13 +3,13 @@ package com.springframework.spring6restmvc.services;
 import com.springframework.spring6restmvc.entities.Beer;
 import com.springframework.spring6restmvc.mappers.BeerMapper;
 import com.springframework.spring6restmvc.model.BeerDTO;
+import com.springframework.spring6restmvc.model.BeerStyle;
 import com.springframework.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,12 +24,14 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
 
     @Override
-    public List<BeerDTO> getAllBears(String beerName) {
+    public List<BeerDTO> getAllBears(String beerName, BeerStyle beerStyle) {
         List<Beer> beerList;
 
         // find in a database (prefilled by bootstrap)
-        if (StringUtils.hasText(beerName)) {
+        if (StringUtils.hasText(beerName) && beerStyle == null) {
             beerList = listBeersByName(beerName);
+        } else if (!StringUtils.hasText(beerName) && beerStyle != null) {
+            beerList = listBeersByStyle(beerStyle);
         } else {
             beerList = beerRepository.findAll();
         }
@@ -38,6 +40,10 @@ public class BeerServiceJPA implements BeerService {
         return beerList.stream()
                 .map(beerMapper::beerToBeerDto)
                 .collect(Collectors.toList());
+    }
+
+    private List<Beer> listBeersByStyle(BeerStyle beerStyle) {
+        return beerRepository.findAllByBeerStyle(beerStyle);
     }
 
     public List<Beer> listBeersByName(String beerName){

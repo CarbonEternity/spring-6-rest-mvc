@@ -67,7 +67,9 @@ public class Beer {
     @OneToMany(mappedBy = "beer")
     private Set<BeerOrderLine> beerOrderLines;
 
-    //TODO
+    // Bidirectional Many-to-Many relationship between Category and Beer.
+    // In SQL such a relationship is represented by a table with two foreign keys.
+    // JoinTable has the same name as in Category but different columns
     @Builder.Default
     @ManyToMany
     @JoinTable(name = "beer_category",

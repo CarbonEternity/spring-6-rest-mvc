@@ -23,7 +23,7 @@ public class BeerOrder {
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
         this.customerRef = customerRef;
-        this.setCustomer(customer); // builder pattern use constructor and we need to invoke setter manually
+        this.setCustomer(customer); // builder pattern use constructor, and we need to invoke setter manually
         this.beerOrderLines = beerOrderLines;
         this.setBeerOrderShipment(beerOrderShipment);
     }

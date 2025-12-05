@@ -35,7 +35,7 @@ public class Customer {
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;
 
-    @Builder.Default // TODO
+    @Builder.Default // to ensure that the field will be initialized with an empty set when lombok calls the builder
     @OneToMany(mappedBy = "customer")
     private Set<BeerOrder> beerOrders = new HashSet<>();
 }

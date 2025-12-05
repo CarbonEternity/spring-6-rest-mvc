@@ -37,7 +37,11 @@ public class Category {
 
     private String description;
 
-    //TODO
+    // Bidirectional Many-to-Many relationship between Category and Beer.
+    // In SQL such a relationship is represented by a table with two foreign keys.
+    // JoinTable - to define the join table name
+    // JoinColumns - primary key from the current table (Category)
+    // InverseJoinColumns - primary key from a related table (Beer)
     @Builder.Default
     @ManyToMany
     @JoinTable(name = "beer_category",
